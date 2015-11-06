@@ -1,8 +1,12 @@
 # Echo server program
 import socket
+import json
 
-HOST = ''                 # Symbolic name meaning all available interfaces
-PORT = 8000              # Arbitrary non-privileged port
+HOST = ''					# Symbolic name meaning all available interfaces
+PORT = 8000					# Arbitrary non-privileged port
+
+REDPIN_HOST = 'localhost'	# host for RedPin server
+REDPIN_PORT = 50007				# port for RedPin
 
 def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -38,15 +42,29 @@ def handle_message(conn, address):
 
     # at this point, scan contains the incoming scan data. Now to parse it.
     # TODO parse scan
+	if message_type == 1:
+		# TODO alert 
+		print 'help!'
+	formatedData = dataParse(scan)
     
 
     # TODO send request to RedPin to get location
+	RedPin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	RedPin.connect((REDPIN_HOST, REDPIN_PORT))
+	print 'connect to the RedPin server'
+	RedPin.sendall(formatedData)
+	location = RedPin.recv(1024)
+	RedPin.close();
 
     # TODO print out any messages we need to
 
     # TODO send messsage back to WiFind device if necessary
 
     conn.close()
+
+def dataParse(data):
+	# TODO <ssid> <bssid> <rssi> <>
+	return formatedData
 
 def wifi_scan_to_json():
     pass
