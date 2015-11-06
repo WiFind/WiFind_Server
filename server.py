@@ -56,14 +56,26 @@ def handle_message(conn, address):
 	location = RedPin.recv(1024)
 	RedPin.close();
 
-    # TODO print out any messages we need to
 
+    # TODO print out any messages we need to
+	print location
     # TODO send messsage back to WiFind device if necessary
 
     conn.close()
 
 def dataParse(data):
-	# TODO <ssid> <bssid> <rssi> <>
+	# TODO 
+	num = data[14:15]
+	sData = data.splitlines()
+	formatedData = '{"action":"getLocation","data":{"wifiReadings":['
+	for line in sData[2:]:
+		elt = line.split(',')
+		formatedDataLine = '{"ssid":"%s","bssid":"%s","wepEnabled":false,"rssi":%s,"isInfrastructure":true},' % (elt[8], elt[7], elt[2])
+		formatedData += formatedDataLine
+	formatedData = formatedData[:-1]
+	formatedData += "]}}"
+
+	# format into <ssid> <bssid> <wepEnable> <rssi> <infrastructure>
 	return formatedData
 
 def wifi_scan_to_json():
