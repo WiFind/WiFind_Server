@@ -24,7 +24,7 @@ def handle_message(conn, address):
     # "2 <wifi scan length>" 2 is check in
     message_type = int(conn.recv(1))
     #Recieve space
-    s.recv(1)
+    conn.recv(1)
     scan_length = ""
     while '\n' not in scan_length:
         scan_length += conn.recv(1)
@@ -32,7 +32,7 @@ def handle_message(conn, address):
     scan_length = int(scan_length[:-1])
     data_to_scan = scan_length
     scan = ""
-    while data_to_scan != 0:
+    while "END:\r\n" not in scan:
         local_data = conn.recv(data_to_scan)
         if not local_data:
             raise RuntimeError("Socket closed unexpectedly")
@@ -55,6 +55,7 @@ def handle_message(conn, address):
 	RedPin.sendall(formatedData)
 	location = RedPin.recv(1024)
 	RedPin.close();
+        print 'close'
 
 
     # TODO print out any messages we need to
@@ -68,12 +69,12 @@ def dataParse(data):
 	num = data[14:15]
 	sData = data.splitlines()
 	formatedData = '{"action":"getLocation","data":{"wifiReadings":['
-	for line in sData[2:]:
+	for line in sData[2:-1]:
 		elt = line.split(',')
 		formatedDataLine = '{"ssid":"%s","bssid":"%s","wepEnabled":false,"rssi":%s,"isInfrastructure":true},' % (elt[8], elt[7], elt[2])
 		formatedData += formatedDataLine
 	formatedData = formatedData[:-1]
-	formatedData += "]}}"
+	formatedData += "]}}\r\n"
 
 	# format into <ssid> <bssid> <wepEnable> <rssi> <infrastructure>
 	return formatedData
