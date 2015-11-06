@@ -11,7 +11,7 @@ def main():
     while 1:
         conn, addr = s.accept()
         print 'Connected by', addr
-        handle_messageo(conn, addr)
+        handle_message(conn, addr)
 
 
 def handle_message(conn, address):
@@ -31,12 +31,14 @@ def handle_message(conn, address):
     while data_to_scan != 0:
         local_data = conn.recv(data_to_scan)
         if not local_data:
-            break
+            raise RuntimeError("Socket closed unexpectedly")
+
         data_to_scan -= len(local_data)
         scan += local_data
 
     # at this point, scan contains the incoming scan data. Now to parse it.
     # TODO parse scan
+    
 
     # TODO send request to RedPin to get location
 
@@ -46,7 +48,7 @@ def handle_message(conn, address):
 
     conn.close()
 
-def parse_wifi_scan_to_json_object():
+def wifi_scan_to_json():
     pass
 
 # If we call this file like "python server.py", call the main() function
