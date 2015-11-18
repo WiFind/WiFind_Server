@@ -27,7 +27,7 @@ def main():
     while 1:
         conn, addr = s.accept()
         print 'Connected by', addr
-        handle_message(conn, addr)
+        t1 = threading.Thread(handle_message(conn, addr))
 
 
 def handle_message(conn, address):
@@ -92,8 +92,8 @@ def dataParse(data):
 	return formatedData
 
 def webServer():
-	RedPin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	RedPin.connect((REDPIN_HOST, REDPIN_PORT))
+    WEB_SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    WEB_SERVER.connect((WEB_SERVER_HOST, WB_SERVER_PORT))
     #Update BSSID list
     #Update request list
 
