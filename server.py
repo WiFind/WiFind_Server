@@ -1,6 +1,6 @@
 # Echo server program
 import socket
-import json
+import threading
 
 HOST = ''					# Symbolic name meaning all available interfaces
 PORT = 8000					# Arbitrary non-privileged port
@@ -8,7 +8,19 @@ PORT = 8000					# Arbitrary non-privileged port
 REDPIN_HOST = 'localhost'	# host for RedPin server
 REDPIN_PORT = 50007				# port for RedPin
 
+WEB_SERVER_HOST = ''
+WB_SERVER_PORT = 123
+
+lock = Lock()
+
+threads = []
+
+WiFind = []
+
+Requests = []
+
 def main():
+    t = threading.Thread(WebServer())
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
     s.listen(1)
@@ -79,7 +91,18 @@ def dataParse(data):
 	# format into <ssid> <bssid> <wepEnable> <rssi> <infrastructure>
 	return formatedData
 
-def wifi_scan_to_json():
+def webServer():
+	RedPin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	RedPin.connect((REDPIN_HOST, REDPIN_PORT))
+    #Update BSSID list
+    #Update request list
+
+    #pass location to server
+    while 1:
+        passData()
+    pass
+
+def passData():
     pass
 
 # If we call this file like "python server.py", call the main() function
