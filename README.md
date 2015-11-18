@@ -6,11 +6,14 @@
 ```
 
 ##Request to Wifind band
+```text
 <1/0>
 1: there is a request
 0: no request
+```
 
 ##Fingerprint to Redpin Server
+```json
 {"action":"getLocation","data":
 	{
 		"wifiReadings":
@@ -33,8 +36,10 @@
 		]
 	}
 }
+```
 
 ##Location from Redpin Server
+```json
 {"status":"ok",
 	"data":
 	{
@@ -47,6 +52,7 @@
 		"mapXcord":446,"mapYcord":340,"accuracy":7
 	}
 }
-
+```
 ##Database between Django server and our server
+
 
