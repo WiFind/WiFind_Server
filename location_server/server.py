@@ -9,6 +9,8 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'WiFind.local_settings'
+import django
+django.setup()
 
 from nursecall.models import Device, Patient
 
