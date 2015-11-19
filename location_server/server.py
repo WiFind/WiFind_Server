@@ -1,6 +1,6 @@
-# Echo server program
+# Echo server programn the Ethernet frame. The MAC address of the destination endpoint does not go in the Ethn the Etn the Ethernet frame. The MAC address of the destination endpoint does not go in the Ethhernet frame. The MAC address of the destination endpoint does not go in the Eth
 import socket
-import json
+import threading
 
 # This is needed to access the database
 
@@ -10,7 +10,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'WiFind.local_settings'
 
-import nursecall.models
+from nursecall.models import Device, Patient
 
 HOST = ''					# Symbolic name meaning all available interfaces
 PORT = 8000					# Arbitrary non-privileged port
@@ -18,9 +18,24 @@ PORT = 8000					# Arbitrary non-privileged port
 REDPIN_HOST = 'localhost'	# host for RedPin server
 REDPIN_PORT = 50007				# port for RedPin
 
+WEB_SERVER_HOST = ''
+WB_SERVER_PORT = 123
+
+threads = []
+
+def add_device_if_necessary(mac_addr):
+    # update device list in database if necessary
+    pass
+
+def get_pending_request(mac_addr):
+    # retrieve pending request from database
+    return request
+
+UPDATE = 0
+
 def main():
     # Example query of WiFind devices, and prints mac addresses
-    for entry in nursecall.models.Device.objects.all():
+    for entry in Device.objects.all():
         print entry.mac_addr
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -29,17 +44,30 @@ def main():
     while 1:
         conn, addr = s.accept()
         print 'Connected by', addr
-        handle_message(conn, addr)
+        t1 = threading.Thread(handle_message(conn, addr))
 
 
 def handle_message(conn, address):
     # format of receive header:
-    # "1 <wifi scan length>" 1 is HELP
-    # "2 <wifi scan length>" 2 is check in
+    # "<MACADDR>1<wifi scan length>\0\r\n" 1 is HELP
+    # "<MACADDR>2<wifi scan length>\0\r\n" 2 is check in
+    mac_addr = conn.recv(17)
+    dev = Device.objects.get(mac_addr=mac_addr)
+    print "%s" % str(dev.mac_addr)
+    add_device_if_necessary(mac_addr)
+    
+    request = get_pending_request(mac_addr)
+    if request:
+        # format request
+        conn.sendall('1')
+    else:
+        conn.sendall('0')
+        
     message_type = int(conn.recv(1))
     #Recieve space
     conn.recv(1)
     scan_length = ""
+    # TODO recieve MAC address in header
     while '\n' not in scan_length:
         scan_length += conn.recv(1)
     # cut off the newline character, and store the integer scan length
@@ -57,12 +85,14 @@ def handle_message(conn, address):
     # at this point, scan contains the incoming scan data. Now to parse it.
     # TODO parse scan
 	if message_type == 1:
-		# TODO alert 
-		print 'help!'
+	    # Ask for help and clear any pending requests
+	    print 'help!'
 	formatedData = dataParse(scan)
     
+        # Check if a request exists, if it does, alert the user
+        
 
-    # TODO send request to RedPin to get location
+    # TODO senn requestme. The MAC address of the destination endpoint does not go in the Eth to RedPin to get location
 	RedPin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	RedPin.connect((REDPIN_HOST, REDPIN_PORT))
 	print 'connect to the RedPin server'
@@ -92,9 +122,6 @@ def dataParse(data):
 
 	# format into <ssid> <bssid> <wepEnable> <rssi> <infrastructure>
 	return formatedData
-
-def wifi_scan_to_json():
-    pass
 
 # If we call this file like "python server.py", call the main() function
 if __name__ == "__main__":
