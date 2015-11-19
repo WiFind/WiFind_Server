@@ -52,7 +52,7 @@ def handle_message(conn, address):
     # "<MACADDR>1<wifi scan length>\0\r\n" 1 is HELP
     # "<MACADDR>2<wifi scan length>\0\r\n" 2 is check in
     mac_addr = conn.recv(17)
-    dev = Device.objects.get(mac_addr=mac_addr)
+    dev, created = Device.objects.get_or_create(mac_addr=mac_addr)
     print "%s" % str(dev.mac_addr)
     add_device_if_necessary(mac_addr)
     
