@@ -2,6 +2,16 @@
 import socket
 import json
 
+# This is needed to access the database
+
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'WiFind.local_settings'
+
+import nursecall.models
+
 HOST = ''					# Symbolic name meaning all available interfaces
 PORT = 8000					# Arbitrary non-privileged port
 
@@ -9,6 +19,10 @@ REDPIN_HOST = 'localhost'	# host for RedPin server
 REDPIN_PORT = 50007				# port for RedPin
 
 def main():
+    # Example query of WiFind devices, and prints mac addresses
+    for entry in nursecall.models.Device.objects.all():
+        print entry.mac_addr
+
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
     s.listen(1)
