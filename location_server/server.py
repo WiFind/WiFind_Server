@@ -1,6 +1,7 @@
 # Echo server programn the Ethernet frame. The MAC address of the destination endpoint does not go in the Ethn the Etn the Ethernet frame. The MAC address of the destination endpoint does not go in the Ethhernet frame. The MAC address of the destination endpoint does not go in the Eth
 import socket
 import threading
+import json
 
 # This is needed to access the database
 
@@ -25,16 +26,6 @@ WB_SERVER_PORT = 123
 
 threads = []
 
-def add_device_if_necessary(mac_addr):
-    # update device list in database if necessary
-    pass
-
-def get_pending_request(mac_addr):
-    # retrieve pending request from database
-    return request
-
-UPDATE = 0
-
 def main():
     # Example query of WiFind devices, and prints mac addresses
     for entry in Device.objects.all():
@@ -56,18 +47,21 @@ def handle_message(conn, address):
     mac_addr = conn.recv(17)
     dev, created = Device.objects.get_or_create(mac_addr=mac_addr)
     print "%s" % str(dev.mac_addr)
-    add_device_if_necessary(mac_addr)
+    # Recieve space
+    conn.recv(1)
     
-    request = get_pending_request(mac_addr)
-    if request:
+    if dev.notify:
         # format request
         conn.sendall('1')
     else:
         conn.sendall('0')
+
+    dev.notify = False
         
     message_type = int(conn.recv(1))
-    #Recieve space
+    # Recieve space
     conn.recv(1)
+
     scan_length = ""
     # TODO recieve MAC address in header
     while '\n' not in scan_length:
@@ -86,26 +80,38 @@ def handle_message(conn, address):
 
     # at this point, scan contains the incoming scan data. Now to parse it.
     # TODO parse scan
-	if message_type == 1:
-	    # Ask for help and clear any pending requests
-	    print 'help!'
-	formatedData = dataParse(scan)
-    
-        # Check if a request exists, if it does, alert the user
+    if message_type == 1:
+        dev.help_req = True
+        # Ask for help and clear any pending requests
+        print 'help!'
+    formatedData = dataParse(scan)
+
+    # Check if a request exists, if it does, alert the user
         
 
     # TODO senn requestme. The MAC address of the destination endpoint does not go in the Eth to RedPin to get location
-	RedPin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	RedPin.connect((REDPIN_HOST, REDPIN_PORT))
-	print 'connect to the RedPin server'
-	RedPin.sendall(formatedData)
-	location = RedPin.recv(1024)
-	RedPin.close();
-        print 'close'
+    RedPin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    RedPin.connect((REDPIN_HOST, REDPIN_PORT))
+    print 'connect to the RedPin server'
+    RedPin.sendall(formatedData)
+    location = ''
+    while '\n' not in location:
+        location += RedPin.recv(1)
+    RedPin.close();
+    print 'close'
+    print location
+
+    parsed = json.loads(location)
+    parsed_map = parsed['data']['map']
+    print repr(parsed)
+    dev.map_url = parsed_map['mapURL']
+    dev.x_loc = parsed['data']['mapXcord']
+    dev.y_loc = parsed['data']['mapYcord']
+    dev.save()
 
 
     # TODO print out any messages we need to
-	print location
+    print location
     # TODO send messsage back to WiFind device if necessary
 
     conn.close()
