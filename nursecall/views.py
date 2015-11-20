@@ -41,10 +41,10 @@ def getList(request):
         newLine += '<p><a href ="' +location_url +'" style="font-size: 24px !important;">Get Location</a><br/>'
         if help==True:
             newLine += '<div style="font-size: 20px !important; color:red">I NEED HELP!</div>'
-        newLine += 'patient descriptions here</p>'
+        newLine += '<div>patient descriptions here</div></p>'
         newLine += '</li>'
         contents += newLine
-    style = '<style>li:hover{background: #eee;}\ndiv{margin: 20px}\nh3{font: bold 20px/1.5 Helvetica, Verdana, sans-serif;}\nli p{font: 200 12px/1.5 Georgia, Times New Roman, serif;}\nli img{float:left;margin:0 15px 0 0;width:250px;height:200px;}</style>'
+    style = '<style>li:hover{background: #eee;}\ndiv{margin: 20px}\nh3{font: bold 20px/1.5 Helvetica, Verdana, sans-serif;}\nli p{font: 200 16px/1.5 Georgia, Times New Roman, serif;}\nli img{float:left;margin:0 15px 0 0;width:250px;height:200px;}</style>'
     html = '<html><head>'+ style +'</head><body><div style = "margin:20px;"><ul style = "list-style-type:none width:500px;">' + contents + '</ul></div></body></html>'
     return HttpResponse(html)
     pass
