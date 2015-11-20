@@ -42,8 +42,9 @@ def main():
 
 def handle_message(conn, address):
     # format of receive header:
-    # "<MACADDR>1<wifi scan length>\0\r\n" 1 is HELP
-    # "<MACADDR>2<wifi scan length>\0\r\n" 2 is check in
+    # "*HELLO*<MACADDR> 1 <wifi scan length>\n" 1 is HELP
+    # "*HELLO*<MACADDR> 2 <wifi scan length>\n" 2 is check in
+    conn.recv(7)
     mac_addr = conn.recv(17)
     dev, created = Device.objects.get_or_create(mac_addr=mac_addr)
     print "%s" % str(dev.mac_addr)
