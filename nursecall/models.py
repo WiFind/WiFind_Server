@@ -11,7 +11,7 @@ class Patient(models.Model):
 
 class Device(models.Model):
     mac_addr = models.CharField(max_length=17, primary_key=True)
-    owner = models.ForeignKey(Patient, null=True)
+    owner = models.ForeignKey(Patient, null=True, blank=True)
     notify = models.BooleanField(default=False)
     help_req = models.BooleanField(default=False)
     def __unicode__(self):
