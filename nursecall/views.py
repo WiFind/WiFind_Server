@@ -4,6 +4,7 @@ from PIL import Image, ImageDraw
 
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib.sites.models import get_current_site
 
 from .models import Device
 
@@ -36,7 +37,7 @@ def getList(request):
         # style taken from http://designshack.net/articles/css/5-simple-and-practical-css-list-styles-you-can-copy-and-paste/
         newLine = '<li style = "padding:10px; overflow:auto;"><img src = "http://40.media.tumblr.com/9441a09bddeafcfe4ea3a5a826195673/tumblr_nhgjoiad8H1s420s7o1_500.png" />'
         newLine += '<h3>' + owner + '</h3>'
-        location_url = 'http://127.0.0.1:8000/loc/' + mac_addr + '.png'
+        location_url = 'http://' + get_current_site(request).domain + '/loc/' + mac_addr + '.png'
         newLine += '<p><a href ="' +location_url +'" style="font-size: 24px !important;">Get Location</a><br/>'
         if help==True:
             newLine += '<div style="font-size: 20px !important; color:red">I NEED HELP!</div>'
