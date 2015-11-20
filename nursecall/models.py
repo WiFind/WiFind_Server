@@ -16,6 +16,6 @@ class Device(models.Model):
     help_req = models.BooleanField(default=False)
     x_loc  = models.IntegerField(default=0)
     y_loc = models.IntegerField(default=0)
-    map_url = models.CharField(max_length=500, default='')
+    map_url = models.ImageField(upload_to = '', blank = True)
     def __unicode__(self):
         return self.mac_addr
