@@ -75,7 +75,7 @@ def handle_message(conn, address):
         if not local_data:
             raise RuntimeError("Socket closed unexpectedly")
 
-        data_to_scan -= len(local_data)
+        #data_to_scan -= len(local_data)
         scan += local_data
 
     # at this point, scan contains the incoming scan data. Now to parse it.
@@ -122,29 +122,27 @@ def handle_message(conn, address):
     conn.close()
 
 def dataParse(data):
-	# TODO 
-	num = data[14:15]
-	sData = data.splitlines()
-	formatedData = '{"action":"getLocation","data":{"wifiReadings":['
-	for line in sData[2:-1]:
-		elt = line.split(',')
-                capabilities = elt[4]
-                privacy = capabilities[0]
-                if privacy == '1' or privacy == '3':
-                    wepEnable = 'true'
-                else:
-                    wepEnable = 'false'
-
-                infrastructure = capabilities[1]
-                if infrastructure == '1':
-                    Infra = 'false'
-                else:
-                    Infra = 'true'
-
-		formatedDataLine = '{"ssid":"%s","bssid":"%s","wepEnabled":%s,"rssi":%s,"isInfrastructure":%s},' % (elt[8], elt[7], wepEnable,elt[2], Infra)
-		formatedData += formatedDataLine
+        # TODO 
+        num = data[14:15]
+        sData = data.splitlines()
+        formatedData = '{"action":"setFingerPrint","data":{"location":{"mapXcord":1043,"symbolicID":"700","mapYcord":321,"map":{"mapURL":"http://www.rauminfo.ethz.ch/...","id":1,"mapName":"IFW A"}},measurement":{"wifiReadings":['
+        for line in sData[2:-1]:
+            elt = line.split(',')
+            capabilities = elt[4]
+            privacy = capabilities[0]
+            if privacy == '1' or privacy == '3':
+                wepEnable = 'true'
+            else:
+                wepEnable = 'false'
+            infrastructure = capabilities[1]
+            if infrastructure == '1':
+                Infra = 'false'
+            else:
+                Infra = 'true'
+	    formatedDataLine = '{"ssid":"%s","bssid":"%s","wepEnabled":%s,"rssi":%s,"isInfrastructure":%s},' % (elt[8], elt[7], wepEnable,elt[2], Infra)
+	    formatedData += formatedDataLine
 	formatedData = formatedData[:-1]
-	formatedData += "]}}\r\n"
+	formatedData += "]}}}\r\n"
 
 	# format into <ssid> <bssid> <wepEnable> <rssi> <infrastructure>
 	return formatedData
