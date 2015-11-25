@@ -69,10 +69,9 @@ def handle_message(conn, address):
         scan_length += conn.recv(1)
     # cut off the newline character, and store the integer scan length
     scan_length = int(scan_length[:-1])
-    data_to_scan = scan_length
     scan = ""
-    while "END:\r\n" not in scan:
-        local_data = conn.recv(data_to_scan)
+    while "END:" not in scan:
+        local_data = conn.recv(1)
         if not local_data:
             raise RuntimeError("Socket closed unexpectedly")
 
