@@ -128,7 +128,20 @@ def dataParse(data):
 	formatedData = '{"action":"getLocation","data":{"wifiReadings":['
 	for line in sData[2:-1]:
 		elt = line.split(',')
-		formatedDataLine = '{"ssid":"%s","bssid":"%s","wepEnabled":false,"rssi":%s,"isInfrastructure":true},' % (elt[8], elt[7], elt[2])
+                capabilities = elt[4]
+                privacy = capabilities[0]
+                if privacy == '1' or privacy == '3':
+                    wepEnable = 'true'
+                else:
+                    wepEnable = 'false'
+
+                infrastructure = capabilities[1]
+                if infrastructure == '1':
+                    Infra = 'false'
+                else:
+                    Infra = 'true'
+
+		formatedDataLine = '{"ssid":"%s","bssid":"%s","wepEnabled":%s,"rssi":%s,"isInfrastructure":%s},' % (elt[8], elt[7], wepEnable,elt[2], Infra)
 		formatedData += formatedDataLine
 	formatedData = formatedData[:-1]
 	formatedData += "]}}\r\n"
