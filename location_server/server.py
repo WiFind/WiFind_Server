@@ -103,11 +103,11 @@ def handle_message(conn, address):
     print location
     
     # TODO add no location exception here
+    parsed = json.loads(location)
     if parsed['status'] != 'ok':
         print "not fingerprinting matches"
         conn.close()
         return 
-    parsed = json.loads(location)
     parsed_map = parsed['data']['map']
     print repr(parsed)
     dev.map_url = parsed_map['mapURL']
