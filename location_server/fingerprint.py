@@ -26,6 +26,14 @@ WB_SERVER_PORT = 123
 
 threads = []
 
+LOCATION_INFO = [
+        ('R2336', 1000, 1109),
+        ('R2301', 2058, 1186),
+        ('R2211', 1796, 1641),
+    ]
+
+LOCATION_COUNTER = 0
+
 def main():
     # Example query of WiFind devices, and prints mac addresses
     for entry in Device.objects.all():
@@ -34,10 +42,11 @@ def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
     s.listen(1)
-    while 1:
+    while LOCATION_COUNTER < len(LOCATION_INFO):
         conn, addr = s.accept()
         print 'Connected by', addr
-        t1 = threading.Thread(handle_message(conn, addr))
+        handle_message(conn, addr)
+        # t1 = threading.Thread(handle_message(conn, addr))
 
 
 def handle_message(conn, address):
@@ -125,7 +134,8 @@ def dataParse(data):
         # TODO 
         num = data[14:15]
         sData = data.splitlines()
-        formatedData = '{"action":"setFingerPrint","data":{"location":{"mapXcord":1043,"symbolicID":"700","mapYcord":321,"map":{"mapURL":"http://www.rauminfo.ethz.ch/...","id":1,"mapName":"IFW A"}},measurement":{"wifiReadings":['
+        formatedData = '{"action":"setFingerPrint","data":{"location":{"symbolicID":"%s","mapXcord":%d,"mapYcord":%d,"map":{"id":3,"mapName":"EECS Floor 2","mapURL":"http://wifind.jonesnl.com/static/eecsmaps/floor2.png"}},measurement":{"wifiReadings":['
+        formatedData = formatedData % LOCATION_INFO[LOCATION_COUNTER]
         for line in sData[2:-1]:
             elt = line.split(',')
             capabilities = elt[4]
