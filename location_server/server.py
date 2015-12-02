@@ -75,7 +75,6 @@ def handle_message(conn, address):
         if not local_data:
             raise RuntimeError("Socket closed unexpectedly")
 
-        data_to_scan -= len(local_data)
         scan += local_data
 
     # at this point, scan contains the incoming scan data. Now to parse it.
@@ -84,6 +83,10 @@ def handle_message(conn, address):
         dev.help_req = True
         # Ask for help and clear any pending requests
         print 'help!'
+    else if message_type == 3:
+        dev.help_req = False
+        print 'Stop helping!'
+
     formatedData = dataParse(scan)
 
     # Check if a request exists, if it does, alert the user
