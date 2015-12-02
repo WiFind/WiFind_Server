@@ -83,7 +83,7 @@ def handle_message(conn, address):
         dev.help_req = True
         # Ask for help and clear any pending requests
         print 'help!'
-    else if message_type == 3:
+    elif message_type == 3:
         dev.help_req = False
         print 'Stop helping!'
 
