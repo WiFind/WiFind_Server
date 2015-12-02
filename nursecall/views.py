@@ -50,7 +50,10 @@ def getList(request):
     d = Device.objects.all()
     for eachDevice in d:
         mac_addr = eachDevice.mac_addr
-        owner = eachDevice.owner.name
+        if eachDevice.owner is None:
+            owner = 'None'
+        else:
+            owner = eachDevice.owner.name
         map_url = eachDevice.map_url
         if eachDevice.help_req == 0:
             # style taken from http://designshack.net/articles/css/5-simple-and-practical-css-list-styles-you-can-copy-and-paste/
