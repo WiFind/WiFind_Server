@@ -104,6 +104,7 @@ def handle_message(conn, address):
         RedPin.close();
         print 'close'
         print location
+        LOCATION_COUNTER += 1
 
     dev.save()
 
