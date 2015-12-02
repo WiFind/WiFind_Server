@@ -18,7 +18,10 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
+import nursecall.views
+
 urlpatterns = [
+    url(r'^$', nursecall.views.getList), 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^loc/', include('nursecall.urls')),
     url(r'^list/', include('nursecall.urls'))
