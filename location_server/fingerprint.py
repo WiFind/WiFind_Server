@@ -93,39 +93,22 @@ def handle_message(conn, address):
         dev.help_req = True
         # Ask for help and clear any pending requests
         print 'help!'
-    formatedData = dataParse(scan)
+        formatedData = dataParse(scan)
+        RedPin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        RedPin.connect((REDPIN_HOST, REDPIN_PORT))
+        print 'connect to the RedPin server'
+        RedPin.sendall(formatedData)
+        location = ''
+        while '\n' not in location:
+            location += RedPin.recv(1)
+        RedPin.close();
+        print 'close'
+        print location
 
-    # Check if a request exists, if it does, alert the user
-        
-
-    # TODO senn requestme. The MAC address of the destination endpoint does not go in the Eth to RedPin to get location
-    RedPin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    RedPin.connect((REDPIN_HOST, REDPIN_PORT))
-    print 'connect to the RedPin server'
-    RedPin.sendall(formatedData)
-    location = ''
-    while '\n' not in location:
-        location += RedPin.recv(1)
-    RedPin.close();
-    print 'close'
-    print location
-    
-    # TODO add no location exception here
-    parsed = json.loads(location)
-    if parsed['status'] != 'ok':
-        print "not fingerprinting matches"
-        conn.close()
-        return 
-    parsed_map = parsed['data']['map']
-    print repr(parsed)
-    dev.map_url = parsed_map['mapURL']
-    dev.x_loc = parsed['data']['mapXcord']
-    dev.y_loc = parsed['data']['mapYcord']
     dev.save()
 
 
     # TODO print out any messages we need to
-    print location
     # TODO send messsage back to WiFind device if necessary
 
     conn.close()
