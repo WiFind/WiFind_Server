@@ -134,7 +134,7 @@ def dataParse(data):
         # TODO 
         num = data[14:15]
         sData = data.splitlines()
-        formatedData = '{"action":"setFingerPrint","data":{"location":{"symbolicID":"%s","mapXcord":%d,"mapYcord":%d,"map":{"id":3,"mapName":"EECS Floor 2","mapURL":"http://wifind.jonesnl.com/static/eecsmaps/floor2.png"}},"measurement":{"wifiReadings":['
+        formatedData = '{"action":"setFingerprint","data":{"location":{"symbolicID":"%s","mapXcord":%d,"mapYcord":%d,"map":{"id":3,"mapName":"EECS Floor 2","mapURL":"http://wifind.jonesnl.com/static/eecsmaps/floor2.png"}},"measurement":{"wifiReadings":['
         formatedData = formatedData % LOCATION_INFO[LOCATION_COUNTER]
         for line in sData[2:-1]:
             elt = line.split(',')
